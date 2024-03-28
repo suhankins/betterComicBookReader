@@ -1,0 +1,26 @@
+<table
+	name="Better comic book reader"
+	author="Punished Bernadetta"
+	color="Color('bf204b')"
+	cannot_be_disabled="false"
+	early_init="false">
+    <hooks>
+		<hook
+			source_file="lib/managers/menu/raid_menu/comicbookgui"
+			file="comicbookgui.lua" />
+		<hook
+			source_file="lib/managers/menu/raid_menu/controls/raidguicontrolimage"
+			file="raidguicontrolimage.lua" />
+    </hooks>
+	<localization
+		directory="loc"
+		default="english.json">
+		<loc
+			file="english.json"
+			language="english" />
+	</localization>
+	<auto_updates
+        provider="modworkshop"
+        id="43129"
+		version="29.03.2024" />
+</table>
