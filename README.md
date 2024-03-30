@@ -3,7 +3,7 @@
 Improved comic book reader for RAID: World War II Special Edition.
 
 ## Features
-* Ability to zoom in and zoom out with mouse wheel or Y and X buttons on controller
+* Ability to zoom in and zoom out with mouse wheel or Y button on controller
 * Ability to switch pages with left and right arrow keys
 * Ability to change pages by clicking dots showing current page
 
