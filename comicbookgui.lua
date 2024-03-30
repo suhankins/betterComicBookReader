@@ -399,7 +399,7 @@ end
 function ComicBookGui:_animate_zoom_in()
 	local t = 0
 	local animation_duration = ComicBookGui.ZOOM_DURATION
-
+	self.animation_running = true
 	while t < animation_duration do
 		local dt = coroutine.yield()
 		t = t + dt
@@ -409,13 +409,14 @@ function ComicBookGui:_animate_zoom_in()
 		local current_zoom = ComicBookGui.MIN_ZOOM + squared_completion * ComicBookGui.MIN_MAX_ZOOM_DIFFERENCE
 		self:set_zoom(current_zoom)
 	end
+	self.animation_running = false
 end
 
 -- Zoom out animation for use with keyboard and controller
 function ComicBookGui:_animate_zoom_out()
 	local t = 0
 	local animation_duration = ComicBookGui.ZOOM_DURATION
-
+	self.animation_running = true
 	while t < animation_duration do
 		local dt = coroutine.yield()
 		t = t + dt
@@ -426,6 +427,7 @@ function ComicBookGui:_animate_zoom_out()
 		local current_zoom = ComicBookGui.MIN_ZOOM + squared_completion * ComicBookGui.MIN_MAX_ZOOM_DIFFERENCE
 		self:set_zoom(current_zoom)
 	end
+	self.animation_running = false
 end
 
 -- Stops animations and sets bullet sizes to 0
@@ -465,18 +467,18 @@ function ComicBookGui:_on_right_arrow_clicked()
 	self:_page_right()
 end
 
--- Callback for zoom in button
-function ComicBookGui:_on_zoom_in()
-	if (self._zoom > ComicBookGui.MIN_ZOOM + 0.1) then return end
-	self._comic_book_panel:stop()
-	self._comic_book_panel:animate(callback(self, self, "_animate_zoom_in"))
-end
-
--- Callback for zoom out button
-function ComicBookGui:_on_zoom_out()
-	if (self._zoom < ComicBookGui.MAX_ZOOM - 0.1) then return end
-	self._comic_book_panel:stop()
-	self._comic_book_panel:animate(callback(self, self, "_animate_zoom_out"))
+-- Callback for zoom button
+function ComicBookGui:_on_zoom()
+	if (self.animation_running == true) then
+		return
+	end
+	if (self._zoom < ComicBookGui.MAX_ZOOM) then
+		self._comic_book_panel:stop()
+		self._comic_book_panel:animate(callback(self, self, "_animate_zoom_in"))
+	else
+		self._comic_book_panel:stop()
+		self._comic_book_panel:animate(callback(self, self, "_animate_zoom_out"))
+	end
 end
 
 function ComicBookGui:bind_controller_inputs()
@@ -491,11 +493,7 @@ function ComicBookGui:bind_controller_inputs()
 		},
 		{
 			key = Idstring("menu_controller_face_top"),
-			callback = callback(self, self, "_on_zoom_in")
-		},
-		{
-			key = Idstring("menu_controller_face_left"),
-			callback = callback(self, self, "_on_zoom_out")
+			callback = callback(self, self, "_on_zoom")
 		}
 	}
 
@@ -506,8 +504,7 @@ function ComicBookGui:bind_controller_inputs()
 			"menu_legend_back",
 			"menu_legend_comic_book_left",
 			"menu_legend_comic_book_right",
-			"menu_legend_zoom_in",
-			"menu_legend_zoom_out"
+			"menu_legend_zoom"
 		},
 		keyboard = {
 			{
